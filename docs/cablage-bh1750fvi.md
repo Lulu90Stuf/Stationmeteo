@@ -39,6 +39,15 @@ i2cdetect -y 1
 ```
 Doit faire apparaître `23` (ou `5c` selon le câblage d'`ADDR`).
 
+## Validé
+
+Testé sur Pi 3B+, `ADDR` à GND → `0x23`, lux stable à 76-77 en
+éclairage intérieur ambiant. Le tout premier `ReadLux()` après
+construction renvoie `0` — normal, le mode continu vient d'être lancé
+et le premier cycle de conversion (~120ms) n'a pas eu le temps de se
+terminer avant la lecture. Laisse un `DelayMs` avant le premier read
+si tu veux éviter ce zéro transitoire.
+
 ## Driver
 
 Pas de protocole à écrire à la main ici — `amalgame-hardware-sensor`
