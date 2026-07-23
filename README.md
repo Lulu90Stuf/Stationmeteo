@@ -37,7 +37,7 @@ plus simple à manipuler) avant déploiement sur le Pi Zero cible.
 |---|---|---|---|
 | BME280 (breakout Bluedot) | I2C (`0x77`) | ✅ validé sur Pi 3 | Température, pression, humidité |
 | BH1750FVI | I2C (`0x23`/`0x5C`) | À tester (driver `Bh1750` déjà dispo dans `amalgame-hardware-sensor`) | Luminosité (lux) |
-| VEML6070 | I2C | À tester | UV |
+| VEML6070 | I2C (`0x38`/`0x39`) | ✅ validé sur Pi 3 | UV (comptage brut, pas encore calibré en indice UV) |
 | MQ135 | Analogique → ADS1115 | À tester | Qualité de l'air (CO2 éq., gaz) |
 | WHSPRG (pluviomètre à auget) | Impulsions (GPIO edge) | À tester | Pluviométrie |
 | CYC-FX1-KV-A1 | À déterminer | À tester | — |
