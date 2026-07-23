@@ -55,6 +55,14 @@ let events: List<GpioEvent> = Gpio.PollEdges()
 // events.Count() = nombre de bascules détectées depuis le dernier appel
 ```
 
+## Validé
+
+Testé sur Pi 3B+ : 8 bascules manuelles → 8 détectées par
+[`../tests/whsprg/whsprg_test.am`](../tests/whsprg/whsprg_test.am),
+aucun rebond ni perte observés avec le polling `DigitalRead` (20ms)
++ anti-rebond logiciel simple. Pas besoin d'edge detection matérielle
+pour l'instant.
+
 ## Points d'attention
 
 - **Rebond de contact** : les reed switches peuvent rebondir

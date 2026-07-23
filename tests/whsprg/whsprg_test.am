@@ -1,0 +1,61 @@
+// whsprg_test.am — validation matérielle du pluviomètre à auget
+// (reed switch) sur GPIO17. Voir ../../docs/cablage-whsprg.md.
+//
+// Poll DigitalRead plutôt que Gpio.WatchEdge : la doc de WatchEdge dit
+// explicitement qu'il "re-request[s] the line ... sets no internal
+// pull", donc le pull-up posé par PinMode(InputPullup) n'est pas
+// garanti survivre à un WatchEdge — sur un reed switch (contact sec,
+// rien côté capteur pour tirer la ligne), une pin qui flotte donne
+// des fronts fantômes. Le polling, lui, respecte le pull-up de
+// PinMode sans ambiguïté — plus sûr pour ce test manuel, quitte à
+// revisiter WatchEdge plus tard (avec pull-up externe) pour le
+// service capture en continu.
+//
+// Tourne ~15s, compte chaque bascule (transition High→Low avec un
+// anti-rebond simple : on ignore les lectures suivantes tant que la
+// ligne n'est pas repassée à High).
+//
+//   amc package add hardware-gpio
+//   amc build whsprg_test.am -o whsprg_test
+//   sudo ./whsprg_test
+
+namespace Demo
+
+import Amalgame.Hardware
+
+public class Program {
+    public static void Main(string[] args) {
+        let pin: int = 17
+        let clk: SysClock = new SysClock()
+
+        if (!Gpio.PinMode(pin, PinMode.InputPullup)) {
+            Console.WriteLine("could not open GPIO" + String_FromInt(pin) +
+                              " — check permissions / chip path")
+            return
+        }
+
+        Console.WriteLine("watching GPIO" + String_FromInt(pin) +
+                          " for ~15s — bascule le pluviomètre à la main maintenant")
+
+        var count: int = 0
+        var wasHigh: bool = true
+        var i: int = 0
+        while (i < 750) {           // 750 * 20ms ≈ 15s
+            let level: Level = Gpio.DigitalRead(pin)
+            if (level == Level.Low) {
+                if (wasHigh) {
+                    count = count + 1
+                    Console.WriteLine("bascule #" + String_FromInt(count))
+                }
+                wasHigh = false
+            } else {
+                wasHigh = true
+            }
+            clk.DelayMs(20)
+            i = i + 1
+        }
+
+        Console.WriteLine("total: " + String_FromInt(count) + " bascule(s) en 15s")
+        Gpio.Close()
+    }
+}
