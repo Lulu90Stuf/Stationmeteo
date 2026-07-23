@@ -1,0 +1,57 @@
+// bh1750_test.am — validation matérielle du BH1750FVI (luminosité)
+// sur I2C bus 1. Driver déjà fourni par amalgame-hardware-sensor
+// (classe Bh1750) — voir ../../docs/cablage-bh1750fvi.md pour le
+// câblage.
+//
+//   amc package add hardware-gpio hardware-sensor
+//   amc build bh1750_test.am -o bh1750_test
+//   sudo ./bh1750_test
+
+namespace Demo
+
+import Amalgame.Hardware
+import Amalgame.Hardware.Sensor
+
+public class Program {
+    private static string Hex2(v: int) {
+        let digits: string = "0123456789abcdef"
+        let hi: int = (v / 16) % 16
+        let lo: int = v % 16
+        return String_Substring(digits, hi, 1) + String_Substring(digits, lo, 1)
+    }
+
+    public static void Main(string[] args) {
+        let clk: SysClock = new SysClock()
+        let bus: I2c = new I2c(1)
+        if (!bus.IsOpen()) {
+            Console.WriteLine("I2C bus /dev/i2c-1 not open (permissions? interface disabled?)")
+            return
+        }
+
+        Console.WriteLine("I2C scan:")
+        let found: List<int> = bus.Scan()
+        for addr in found {
+            Console.WriteLine("  found 0x" + Program.Hex2(addr))
+        }
+
+        // 0x23 = ADDR tied to GND/floating (the common default). If your
+        // wiring puts ADDR on VCC instead, this will read 0 the same way
+        // a missing sensor would — check the scan above and switch to
+        // 0x5C if that's what shows up.
+        let lux: Bh1750 = new Bh1750(bus, 0x23)
+
+        var i: int = 0
+        while (i < 6) {
+            clk.DelayMs(500)
+            let v: int = lux.ReadLux()
+            if (v < 0) {
+                Console.WriteLine("read error")
+            } else {
+                Console.WriteLine("Lux: " + String_FromInt(v))
+            }
+            i = i + 1
+        }
+
+        bus.Close()
+    }
+}
