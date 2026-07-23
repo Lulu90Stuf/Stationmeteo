@@ -32,6 +32,7 @@ public class Program {
     }
 
     public static void Main(string[] args) {
+        let clk: SysClock = new SysClock()
         let bus: I2c = new I2c(1)
         if (!bus.IsOpen()) {
             Console.WriteLine("I2C bus /dev/i2c-1 not open (permissions? interface disabled?)")
@@ -64,7 +65,7 @@ public class Program {
         // sensor.
         var i: int = 0
         while (i < 6) {
-            Process_Sleep(500)
+            clk.DelayMs(500)
             let lsb: int = bus.ReadByte(0x38)
             let msb: int = bus.ReadByte(0x39)
             if (lsb < 0 || msb < 0) {
