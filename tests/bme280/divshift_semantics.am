@@ -1,0 +1,27 @@
+// divshift_semantics.am — diagnostic qui a permis de trouver le bug de
+// compensation pression/humidité dans amalgame-hardware-sensor v0.6.0
+// (corrigé en amont, commit 95a5714).
+//
+// Le driver Bosch BME280 (datasheet) utilise des décalages arithmétiques
+// (`>>`) qui arrondissent vers -infini. Le portage Amalgame utilisait `/`
+// à la place — qui tronque vers zéro. Les deux ne sont PAS équivalents
+// pour un opérande négatif, ce qui cassait la compensation pression
+// (des valeurs intermédiaires négatives apparaissent à température
+// ambiante normale).
+//
+//   amc build divshift_semantics.am -o divshift_semantics && ./divshift_semantics
+//
+// Attendu :
+//   -7 / 2  = -3   (troncature vers zéro)
+//   -5 / 2  = -2   (troncature vers zéro)
+//   -7 >> 1 = -4   (floor — sémantique correcte pour porter l'algo Bosch)
+
+class Program {
+    public static void Main() {
+        let a: int = 0 - 7
+        Console.WriteLine("-7 / 2 = " + String_FromInt(a / 2))
+        let b: int = 0 - 5
+        Console.WriteLine("-5 / 2 = " + String_FromInt(b / 2))
+        Console.WriteLine("-7 >> 1 = " + String_FromInt(a >> 1))
+    }
+}

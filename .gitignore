@@ -1,0 +1,14 @@
+# amc build artifacts (generated .c + linked binaries live next to the .am source)
+*.c
+tests/**/bme280_test
+tests/**/divshift_semantics
+tests/**/hello
+
+# Amalgame package manager state (local cache paths, not portable)
+amalgame.lock
+.amalgame/
+
+# SQLite data (created at runtime, not source)
+*.db
+*.db-wal
+*.db-shm
