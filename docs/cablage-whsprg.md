@@ -57,8 +57,8 @@ let events: List<GpioEvent> = Gpio.PollEdges()
 
 ## Validé
 
-Testé sur Pi 3B+ : 8 bascules manuelles → 8 détectées (soit 2.4 mm
-équivalent à 0.3 mm/bascule — comptage de validation, pas de la vraie
+Testé sur Pi 3B+ : 8 bascules manuelles → 8 détectées (soit 2.2352 mm
+équivalent à 0.2794 mm/bascule — comptage de validation, pas de la vraie
 pluie) par
 [`../tests/whsprg/whsprg_test.am`](../tests/whsprg/whsprg_test.am),
 aucun rebond ni perte observés avec le polling `DigitalRead` (20ms)
@@ -75,7 +75,9 @@ pour l'instant.
   plutôt que deviner une constante.
 - **Constante mm/bascule** : identifié comme un **MISOL / Fine Offset
   WH-SP-RG** (pièce détachée de pluviomètre pour stations météo type
-  Misol/Ecowitt) — résolution documentée : **0.3 mm par bascule**,
-  confirmée par plusieurs fiches produit/manuels concordants. Donc
-  `mm_pluie = nb_bascules × 0.3`. À utiliser tel quel dans la
+  Misol/Ecowitt). Une recherche web donnait 0.3 mm/bascule (fiches
+  produit génériques), mais la valeur exacte trouvée par Bastien pour
+  ce matériel est **0.2794 mm/bascule** (résolution classique
+  0.011 in) — c'est celle-ci qui fait foi. Donc
+  `mm_pluie = nb_bascules × 0.2794`. À utiliser tel quel dans la
   conversion côté `capture/`.

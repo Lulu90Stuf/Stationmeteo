@@ -39,7 +39,7 @@ plus simple à manipuler) avant déploiement sur le Pi Zero cible.
 | BH1750FVI | I2C (`0x23`) | ✅ validé sur Pi 3 | Luminosité (lux) |
 | VEML6070 | I2C (`0x38`/`0x39`) | ✅ validé sur Pi 3 | UV (comptage brut, pas encore calibré en indice UV) |
 | MQ135 | Analogique → ADS1115 | À tester | Qualité de l'air (CO2 éq., gaz) |
-| WHSPRG = MISOL/Fine Offset WH-SP-RG (pluviomètre à auget) | Impulsions (GPIO17, polling) | ✅ validé sur Pi 3 | Pluviométrie — 0.3 mm/bascule |
+| WHSPRG = MISOL/Fine Offset WH-SP-RG (pluviomètre à auget) | Impulsions (GPIO17, polling) | ✅ validé sur Pi 3 | Pluviométrie — 0.2794 mm/bascule |
 | CYC-FX1-KV-A1 | À déterminer | À tester | — |
 | Capteur de vent | — | Non commandé | Vitesse/direction du vent |
 
