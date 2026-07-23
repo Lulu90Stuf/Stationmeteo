@@ -57,7 +57,9 @@ let events: List<GpioEvent> = Gpio.PollEdges()
 
 ## Validé
 
-Testé sur Pi 3B+ : 8 bascules manuelles → 8 détectées par
+Testé sur Pi 3B+ : 8 bascules manuelles → 8 détectées (soit 2.4 mm
+équivalent à 0.3 mm/bascule — comptage de validation, pas de la vraie
+pluie) par
 [`../tests/whsprg/whsprg_test.am`](../tests/whsprg/whsprg_test.am),
 aucun rebond ni perte observés avec le polling `DigitalRead` (20ms)
 + anti-rebond logiciel simple. Pas besoin d'edge detection matérielle
@@ -71,9 +73,9 @@ pour l'instant.
   anti-rebond logiciel (ignorer les fronts trop rapprochés, ex. <
   50-100ms d'écart) — à valider empiriquement sur le matériel réel
   plutôt que deviner une constante.
-- **Constante mm/bascule** : chaque modèle de pluviomètre a son propre
-  volume d'auget (donc son propre mm de pluie par bascule). Je n'ai
-  pas de fiche technique fiable pour le "WHSPRG" précis en main — à
-  vérifier sur la doc/page produit avant de coder la conversion
-  bascules → mm dans `capture/`. Le test matériel se contentera de
-  compter les bascules brutes.
+- **Constante mm/bascule** : identifié comme un **MISOL / Fine Offset
+  WH-SP-RG** (pièce détachée de pluviomètre pour stations météo type
+  Misol/Ecowitt) — résolution documentée : **0.3 mm par bascule**,
+  confirmée par plusieurs fiches produit/manuels concordants. Donc
+  `mm_pluie = nb_bascules × 0.3`. À utiliser tel quel dans la
+  conversion côté `capture/`.
